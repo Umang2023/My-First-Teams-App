@@ -7,7 +7,6 @@ import '../styles/design.css';
 import M from 'materialize-css'
 import socket from "socket.io-client/lib/socket";
 
-
 const Container = styled.div`
     display: flex;
     flex-direction: row;
@@ -25,13 +24,13 @@ const Button = styled.button`
     height: 3rem;
 `
 const StyledVideo = styled.video`
-    height: 70%;
-    width: 70%;
+    width: 60%;
+    height: 50%;
 `;
 
 const videoConstraints = {
-    height: window.innerHeight / 2,
-    width: window.innerWidth / 2
+    height: window.innerHeight,
+    width: window.innerWidth,
 };
 
 const Room = (props) => {
@@ -49,7 +48,8 @@ const Room = (props) => {
     const [audio, setAudio] = useState(false);
     const [otherUserVideo, setOtherUserVideo] = useState([]);
     const [otherUserAudio, setOtherUserAudio] = useState([]);
-
+    let isVideoAvailable = true;
+    let isAudioAvailable = true;
     useEffect(() => {
         socketRef.current = io.connect("/");
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
@@ -121,7 +121,6 @@ const Room = (props) => {
                             console.log("Unhandled event");
                         }
                     }
-
                 }
             })
         })
@@ -159,34 +158,39 @@ const Room = (props) => {
     // function UpdateUsersMedia()
 
     const updateVideo = () => {
-        setVideo((currentStatus) => {
-            // socketRef.current.emit("updateMyMedia", {
-            //     type: "video",
-            //     currentMediaStatus: !currentStatus,
-            // });
-            if (OnAndOff()) {
-                localStream.getVideoTracks()[0].enabled = !currentStatus;
-            }
-            setLocalStream(localStream);
-            return !currentStatus;
-        });
-    };
+        // setVideo((currentStatus) => {
+        //     // socketRef.current.emit("updateMyMedia", {
+        //     //     type: "video",
+        //     //     currentMediaStatus: !currentStatus,
+        //     // });
+
+        if (OnAndOff()) {
+            userVideo.current.srcObject.getVideoTracks()[0].enabled = !isVideoAvailable;
+        }
+        isVideoAvailable = !isVideoAvailable;
+        // const stream = userVideo.current.srcObject;
+        // setLocalStream(stream);
+        // return !currentStatus;
+
+    }
     const updateMic = () => {
-        setAudio((currentStatus) => {
-            // socketRef.current.emit("updateMyMedia", {
-            //     type: "mic",
-            //     currentMediaStatus: !currentStatus,
-            // });
-            if (OnAndOff()) {
-                localStream.getAudioTracks()[0].enabled = !currentStatus;
-            }
-            setLocalStream(localStream);
-            return !currentStatus;
-        });
-    };
+        // setAudio((currentStatus) => {
+        //     // socketRef.current.emit("updateMyMedia", {
+        //     //     type: "mic",
+        //     //     currentMediaStatus: !currentStatus,
+        //     // });
+
+        if (OnAndOff()) {
+            userVideo.current.srcObject.getAudioTracks()[0].enabled = !isAudioAvailable;
+        }
+        isAudioAvailable = !isAudioAvailable;
+    }
+
     function OnAndOff() {
         console.log(localStream);
-        if (localStream) {
+
+        if (userVideo.current) {
+            console.log(userVideo.current.srcObject);
             return true;
         }
         else {
@@ -210,10 +214,10 @@ const Room = (props) => {
     }
 
     return (
-        <div>
+        <div className="Room-div">
             {
                 inRoom === true ? (
-                    <Container>
+                    <div className="InRoom-div">
                         <div className="Video-div">
                             <StyledVideo muted ref={userVideo} autoPlay playsInline />
                             <div className="video-buttons">
@@ -228,9 +232,9 @@ const Room = (props) => {
                                 );
                             })
                         }
-                    </Container>
+                    </div>
                 ) : (
-                    <Container>
+                    <div className="NotInRoom-div">
                         <div className="Video-div">
                             <StyledVideo muted ref={userVideo} autoPlay playsInline />
                             <div className="video-buttons">
@@ -238,10 +242,13 @@ const Room = (props) => {
                                 <Button onClick={() => { updateMic() }}> Turn Audio On And Off</Button>
                             </div>
                         </div>
-                        <Button onClick={() => { return (setInRoom(true)) }}>
-                            Join Room
-                        </Button>
-                    </Container>
+                        <div className="Button-div">
+                            <Button onClick={() => { return (setInRoom(true)) }}>
+                                Join Room
+                            </Button>
+                        </div>
+
+                    </div>
                 )
             }
 

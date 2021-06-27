@@ -1,5 +1,6 @@
 .Video-div {
-    padding: 0px;
+    padding: 30px;
+    margin: 30px;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -12,5 +13,56 @@
     justify-content: center;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+.Create-Room-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-image: linear-gradient(-90deg, #23073d, #7f23d5, #8523d5);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.Room-div {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+    margin: auto;
+    flex-wrap: wrap;
+    background-image: linear-gradient(-90deg, #23073d, #7f23d5, #8523d5);
+    background-repeat: no-repeat;
+    background-position: center;
+    /* overflow: hidden; */
+}
+
+.Button-div {
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.InRoom-div {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+    flex-wrap: wrap;
+}
+
+.NotInRoom-div {
+    display: flex;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     flex-wrap: wrap;
 }
