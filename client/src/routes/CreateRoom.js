@@ -1,6 +1,7 @@
 import React from "react";
 import { v1 as uuid } from "uuid";
-import '../styles/design.css'
+import '../styles/design.css';
+import img from '../images/img.png'
 const CreateRoom = (props) => {
     function create() {
         const id = uuid();
@@ -9,7 +10,16 @@ const CreateRoom = (props) => {
 
     return (
         <div className="Create-Room-div">
-            <button onClick={create}>Create room</button>
+            <div className="img-div">
+                <img
+                    src={img}
+                    alt="new"
+                />
+            </div>
+            <div className="Button-div">
+                <button className="angled-gradient-button" onClick={create} style={{height: '4rem', width:'60%'}}>Create room</button>
+            </div>
+
         </div>
 
     );

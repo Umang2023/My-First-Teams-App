@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
   text-align: center;
-  background-image: url('https://photoshop-kopona.com/uploads/posts/2016-05/1462163931_room-backgrounds-1.jpg');
+  background-image: linear-gradient(-90deg, #23073d, #7f23d5, #8523d5);
   background-repeat: no-repeat;
   background-position: center;
 }

@@ -1,31 +1,47 @@
 .Video-div {
-    padding: 30px;
-    margin: 30px;
+    margin: 5px 10px 5px;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
     flex-wrap: wrap;
+    width: 45%;
+    height: 45%;
 }
 
-.Video-div .video-buttons {
+.Outside-Video-div {
+    padding: 20px;
+    margin: 10px;
     display: flex;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+    height: 80%;
 }
 
 .Create-Room-div {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-wrap: wrap;
     background-image: linear-gradient(-90deg, #23073d, #7f23d5, #8523d5);
     background-repeat: no-repeat;
     background-position: center;
     width: 100%;
     height: 100vh;
+}
+
+.img-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 55%;
+    height: 100%;
+    float: left !important;
+    margin-left: 0;
+}
+
+.img-div>img {
+    width: 100%;
+    height: 100%;
+    background: none;
 }
 
 .Room-div {
@@ -35,9 +51,6 @@
     width: 100%;
     margin: auto;
     flex-wrap: wrap;
-    background-image: linear-gradient(-90deg, #23073d, #7f23d5, #8523d5);
-    background-repeat: no-repeat;
-    background-position: center;
     /* overflow: hidden; */
 }
 
@@ -52,9 +65,11 @@
 .InRoom-div {
     display: flex;
     flex-direction: row;
-    width: 100%;
-    height: 100vh;
+    /* width: 100%; */
+    height: 90%;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .NotInRoom-div {
@@ -63,6 +78,49 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
-    flex-wrap: wrap;
+    height: 100vh;
+    background-image: linear-gradient(-90deg, #28034b, #7f23d5, #8523d5);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.Controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 10%;
+    background-color: #3363ff;
+}
+
+.angled-gradient-button {
+    background-size: 220%;
+    box-shadow: 0 .2em .3em rgba(0, 0, 0, 0.15);
+    color: #fcfcfc;
+    background-color: transparent;
+    background-position: 100%;
+    border: 3px solid #3363ff;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 3px;
+    transition: all .2s ease-out;
+    font-weight: 900;
+    cursor: pointer;
+    letter-spacing: 2px;
+    background-image: linear-gradient(110deg, #3363ff 0%, #3363ff 50%, transparent 50%, transparent 100%);
+    font-size: 14px;
+}
+
+.angled-gradient-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 .3em rgba(0, 0, 0, 0.25);
+    background-position: 0;
+    color: #fff;
+}
+
+.angled-gradient-button:active {
+    transform: translateY(-1px);
 }

@@ -42,7 +42,7 @@ io.on('connection', socket => {
 
     socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {
         console.log("updateMyMedia");
-        socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus});
+        socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
     });
 
     socket.on('disconnect', () => {
@@ -55,9 +55,19 @@ io.on('connection', socket => {
         }
         socket.broadcast.emit("user left", socket.id);
     });
-
+    socket.on('change', (payload) => {
+        socket.broadcast.emit('change', payload)
+    });
+// 
 });
+const PORT = process.env.PORT || 8000
+if (process.env.PROD) {
+    app.use(express.static(__dirname + '/client/build'));
+    app.get('*', (request, response) => {
+        response.sendFile(path.join(__dirname, 'client/build/index.html'));
+    });
+}
 
-server.listen(process.env.PORT || 8000, () => console.log('server is running on port 8000'));
+server.listen(process.env.PORT || 8000, () => console.log('server is running...'));
 
 
