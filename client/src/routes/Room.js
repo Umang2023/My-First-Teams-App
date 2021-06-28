@@ -7,7 +7,7 @@ import styled from "styled-components";
 import '../styles/design.css';
 import M from 'materialize-css'
 import socket from "socket.io-client/lib/socket";
-
+import logo from '../images/Logo.png'
 const Button = styled.button`
     display: flex;
     flex-wrap: wrap;
@@ -26,8 +26,6 @@ const StyledVideo = styled.video`
     border-radius: 10px;
     overflow: hidden;
     margin: 1px;
-    width: auto;
-    height: auto;
 `;
 
 const Video = (props) => {
@@ -50,10 +48,15 @@ const Room = (props) => {
     const [videoFlag, setVideoFlag] = useState(true);
     const [userUpdate, setUserUpdate] = useState([]);
     const [inRoom, setInRoom] = useState(false);
+    const [chat, setChat] = useState([]);
+    const [name, setName] = useState("");
+    // const [isName, setisName] = useState(false);
+    const [msgRcv, setMsgRcv] = useState("");
     const socketRef = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
     const roomID = props.match.params.roomID;
+    let isName = false;
     const videoConstraints = {
         minAspectRatio: 1.333,
         minFrameRate: 60,
@@ -61,6 +64,7 @@ const Room = (props) => {
         width: window.innerWidth,
     };
     useEffect(() => {
+        // socketRef.current = io.connect("/", { transports: ["websocket"], upgrade: false });
         socketRef.current = io.connect("/");
         createStream();
     }, []);
@@ -125,9 +129,24 @@ const Room = (props) => {
                     alert("Room is Full");
                     window.location.replace("/");
                 });
+
+                // socketRef.current.on("msgRcv", ({ name, msg: value, sender }) => {
+                //     setMsgRcv({ value, sender });
+                //     setTimeout(() => {
+                //         setMsgRcv({});
+                //     }, 2000);
+                // });
             });
     }
-
+    // const sendMsg = (value) => {
+    //     socketRef.current.emit("msgUser", { name, msg: value, sender: name });
+    //     let msg = {};
+    //     msg.msg = value;
+    //     msg.type = "sent";
+    //     msg.timestamp = Date.now();
+    //     msg.sender = name;
+    //     setChat([...chat, msg]);
+    // };
     function createPeer(userToSignal, callerID, stream) {
         const peer = new Peer({
             initiator: true,
@@ -218,14 +237,25 @@ const Room = (props) => {
         socketRef.current.emit('disconnect');
         window.location.replace("/");
     }
-
+    function CheckName() {
+        if (isName === true) {
+            return (setInRoom(true));
+        }
+        else {
+            alert("Please Set Your Name");
+        }
+    }
+    function DisplayUserName() {
+        M.toast({ html: `Hello ${name}`, classes: 'rounded' });
+        isName = true;
+    }
     return (
-        <div>
+        <div className="Room-div">
             {
                 inRoom === true ?
                     (
                         <div className="InRoom-div">
-                            <div className="Video-div">
+                            <div id="item1" className="Video-div">
                                 <StyledVideo muted ref={userVideo} autoPlay playsInline />
                             </div>
                             {
@@ -240,9 +270,11 @@ const Room = (props) => {
                                             }
                                         });
                                     }
+                                    console.log(index);
+                                    let temp = "item" + toString(index + 2);
                                     return (
                                         // <div key={peer.peerID} >
-                                        <div className="Video-div">
+                                        <div id={temp} className="Video-div">
                                             <Video peer={peer.peer} />
                                         </div>
                                         // </div>
@@ -255,48 +287,60 @@ const Room = (props) => {
                             <div className="Outside-Video-div">
                                 <StyledVideo muted ref={userVideo} autoPlay playsInline />
                             </div>
-                            <div className="Button-div">
-                                <Button className="angled-gradient-button" onClick={() => { return (setInRoom(true)) }}>
-                                    Join Room
-                                </Button>
+                            <div className="Joining-Options">
+                                <div className="Button-div2">
+                                    <Button className="angled-gradient-button" onClick={() => { CheckName() }}>
+                                        Join Room
+                                    </Button>
+                                </div>
+                                <div className="SetName-div">
+                                    <input id="icon_telephone"
+                                        type="text"
+                                        placeholder="Enter your Name"
+                                        onChange={(event) => { setName(event.target.value) }}></input>
+                                </div>
+                                <button className="angled-gradient-button" onClick={() => { DisplayUserName() }} style={{ height: '4rem', width: '50%' }}>Set this as my Name</button>
                             </div>
+
                         </div>
                     )
             }
-            <div className="Controls">
-                {
-                    videoFlag === true ?
-                        (<i className="medium material-icons" style={{ cursor: 'pointer', color: 'white' }} onClick={() => {
-                            UpdateVideo()
-                        }}>videocam</i>)
-                        :
-                        (<i className="medium material-icons" style={{ cursor: 'pointer', color: 'red' }} onClick={() => {
-                            UpdateVideo()
-                        }}>videocam_off</i>)
-                }
-                &nbsp;&nbsp;&nbsp;
-                {
-                    inRoom === true ?
-                        (<i class="medium material-icons" style={{ cursor: 'pointer', color: 'red' }}
-                            onClick={() => {
-                                RemoveUser()
-                            }}
-                        >call_end</i>)
-                        :
-                        (<div></div>)
-                }
-                &nbsp;&nbsp;&nbsp;
-                {
-                    audioFlag === true ?
-                        (<i className="medium material-icons" style={{ cursor: 'pointer', color: 'white' }} onClick={() => {
-                            UpdateAudio()
-                        }}>mic</i>)
-                        :
-                        (<i className="medium material-icons" style={{ cursor: 'pointer', color: 'red' }} onClick={() => {
-                            UpdateAudio()
-                        }}>mic_off</i>)
-                }
+            <div className="Footer">
+                <div className="Controls">
+                    {
+                        videoFlag === true ?
+                            (<i className="material-icons" style={{ cursor: 'pointer', color: 'white' }} onClick={() => {
+                                UpdateVideo()
+                            }}>videocam</i>)
+                            :
+                            (<i className="material-icons" style={{ cursor: 'pointer', color: 'red' }} onClick={() => {
+                                UpdateVideo()
+                            }}>videocam_off</i>)
+                    }
+                    &nbsp;&nbsp;&nbsp;
+                    {
+                        inRoom === true ?
+                            (<i className="material-icons" style={{ cursor: 'pointer', color: 'red' }}
+                                onClick={() => {
+                                    RemoveUser()
+                                }}
+                            >call_end</i>)
+                            :
+                            (<div></div>)
+                    }
+                    &nbsp;&nbsp;&nbsp;
+                    {
+                        audioFlag === true ?
+                            (<i className="material-icons" style={{ cursor: 'pointer', color: 'white' }} onClick={() => {
+                                UpdateAudio()
+                            }}>mic</i>)
+                            :
+                            (<i className="material-icons" style={{ cursor: 'pointer', color: 'red' }} onClick={() => {
+                                UpdateAudio()
+                            }}>mic_off</i>)
+                    }
 
+                </div>
             </div>
         </div>
 

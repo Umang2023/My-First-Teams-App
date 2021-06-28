@@ -11,7 +11,6 @@ const users = {};
 const socketToRoom = {};
 
 io.on('connection', socket => {
-
     socket.on("join room", roomID => {
         if (users[roomID]) {
             const length = users[roomID].length;
@@ -54,11 +53,16 @@ io.on('connection', socket => {
             users[roomID] = room;
         }
         socket.broadcast.emit("user left", socket.id);
+        socket.removeAllListeners();
     });
+
     socket.on('change', (payload) => {
         socket.broadcast.emit('change', payload)
     });
-// 
+
+    // socket.on("msgUser", ({ name, to, msg, sender }) => {
+    //     io.to(to).emit("msgRcv", { name, msg, sender });
+    // });
 });
 const PORT = process.env.PORT || 8000
 if (process.env.PROD) {
