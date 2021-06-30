@@ -1,7 +1,7 @@
 {
   "name": "group-video-final",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.2.0",
