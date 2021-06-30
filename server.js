@@ -9,7 +9,7 @@ const path = require("path");
 const users = {};
 
 const socketToRoom = {};
-
+io.set('transports', ['websocket']);
 io.on('connection', socket => {
     socket.on("join room", roomID => {
         if (users[roomID]) {

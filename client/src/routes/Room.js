@@ -64,8 +64,8 @@ const Room = (props) => {
         width: window.innerWidth,
     };
     useEffect(() => {
-        // socketRef.current = io.connect("/", { transports: ["websocket"], upgrade: false });
-        socketRef.current = io.connect("/");
+        socketRef.current = io.connect("/", { transports: ["websocket"], upgrade: false });
+        // socketRef.current = io.connect("/");
         createStream();
     }, []);
 
