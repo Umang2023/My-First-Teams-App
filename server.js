@@ -49,11 +49,14 @@ io.on('connection', socket => {
         const roomID = socketToRoom[socket.id];
         let room = users[roomID];
         if (room) {
-            room = room.filter(id => id !== socket.id);
-            users[roomID] = room;
+            const newroom = room.filter(id => id !== socket.id);
+            delete room;
+            users[roomID] = newroom;
+        }
+        else {
+            delete users[roomID];
         }
         socket.broadcast.emit("user left", socket.id);
-        socket.removeAllListeners();
     });
 
     socket.on('change', (payload) => {
