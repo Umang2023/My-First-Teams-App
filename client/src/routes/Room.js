@@ -6,7 +6,7 @@ import Peer from "simple-peer";
 import styled from "styled-components";
 import '../styles/design.css';
 import M from 'materialize-css'
-import socket from "socket.io-client/lib/socket";
+import socket from "socket.io-client/build/socket";
 import logo from '../images/Logo.png'
 const Button = styled.button`
     display: flex;
@@ -64,8 +64,8 @@ const Room = (props) => {
         width: window.innerWidth,
     };
     useEffect(() => {
-        socketRef.current = io.connect("/", { transports: ["websocket"], upgrade: false });
-        // socketRef.current = io.connect("/");
+        // socketRef.current = io.connect("/", { transports: ["websocket"], upgrade: false });
+        socketRef.current = io.connect("/");
         createStream();
     }, []);
 
@@ -234,7 +234,7 @@ const Room = (props) => {
     }
 
     function RemoveUser() {
-        socketRef.current.emit('disconnect');
+        socketRef.current.disconnect();
         window.location.replace("/");
     }
     function CheckName() {
