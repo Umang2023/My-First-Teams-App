@@ -170,16 +170,21 @@
 .SetName-div>input {
     border-bottom: 3px solid #3363ff !important;
     width: 10%;
+    font-family: 'Philosopher', sans-serif;
     color: #fff;
+    background-color: transparent;
 }
 
 .SetName-div>input::placeholder {
     color: #fff;
+    background-color: transparent;
     font-family: 'Philosopher', sans-serif;
 }
 
 .SetName-div>input:focus {
     color: #fff;
+    background-color: transparent;
+    padding-left: 5px;
     font-family: 'Philosopher', sans-serif;
 }
 
@@ -196,6 +201,17 @@
     height: 10vh;
     background-color: #3363ff;
     border-radius: 10px;
+}
+
+.toast-class {
+    background-color: #3363ff;
+    font-family: 'Philosopher', sans-serif;
+}
+
+.copy-to-clipboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .Footer {

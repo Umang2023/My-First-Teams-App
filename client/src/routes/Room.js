@@ -50,12 +50,12 @@ const Room = (props) => {
     const [inRoom, setInRoom] = useState(false);
     const [chat, setChat] = useState([]);
     const [name, setName] = useState("");
-    // const [isName, setisName] = useState(false);
     const [msgRcv, setMsgRcv] = useState("");
     const socketRef = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
     const roomID = props.match.params.roomID;
+    const [hasCopied, setHasCopied] = useState(false);
     let isName = false;
     const videoConstraints = {
         minAspectRatio: 1.333,
@@ -77,6 +77,7 @@ const Room = (props) => {
                 socketRef.current.on("all users", (users) => {
                     console.log(users)
                     const peers = [];
+                    const names = {};
                     users.forEach((userID) => {
                         const peer = createPeer(userID, socketRef.current.id, stream);
                         peersRef.current.push({
@@ -87,12 +88,14 @@ const Room = (props) => {
                             peerID: userID,
                             peer,
                         });
+                        names[userID] = name;
                     });
                     setPeers(peers);
+
                 });
                 socketRef.current.on("user joined", (payload) => {
                     console.log("user joined", payload);
-                    M.toast({ html: `${payload.callerID} joined`, classes: 'rounded' });
+                    M.toast({ html: `${payload.callerID} joined`, classes: 'rounded toast-class' });
                     const peer = addPeer(payload.signal, payload.callerID, stream);
                     peersRef.current.push({
                         peerID: payload.callerID,
@@ -106,7 +109,7 @@ const Room = (props) => {
                 });
 
                 socketRef.current.on("user left", (id) => {
-                    M.toast({ html: `${id} left`, classes: 'rounded' });
+                    M.toast({ html: `${id} left`, classes: 'rounded toast-class' });
                     const peerObj = peersRef.current.find((p) => p.peerID === id);
                     if (peerObj) {
                         peerObj.peer.destroy();
@@ -114,6 +117,7 @@ const Room = (props) => {
                     const peers = peersRef.current.filter((p) => p.peerID !== id);
                     peersRef.current = peers;
                     setPeers(peers);
+                    // socketRef.current.emit("delete user from database", id);
                 });
 
                 socketRef.current.on("receiving returned signal", (payload) => {
@@ -127,6 +131,7 @@ const Room = (props) => {
 
                 socketRef.current.on("room full", () => {
                     alert("Room is Full");
+                    socketRef.current.disconnect();
                     window.location.replace("/");
                 });
 
@@ -246,8 +251,22 @@ const Room = (props) => {
         }
     }
     function DisplayUserName() {
-        M.toast({ html: `Hello ${name}`, classes: 'rounded' });
+        M.toast({ html: `Hello ${name}`, classes: 'rounded toast-class' });
         isName = true;
+
+    }
+    function CopyToClipboard() {
+        let text = window.location.href;
+        try {
+            navigator.clipboard.writeText(text).then(() => {
+                M.toast({ html: `Copied to clipboard`, classes: 'rounded toast-class' })
+                setHasCopied(true)
+            })
+        } catch (err) {
+            M.toast({ html: `Couldn't Copy to clipboard`, classes: 'rounded toast-class' })
+            console.log(err);
+            setHasCopied(false)
+        }
     }
     return (
         <div className="Room-div">
@@ -338,6 +357,25 @@ const Room = (props) => {
                             (<i className="material-icons" style={{ cursor: 'pointer', color: 'red' }} onClick={() => {
                                 UpdateAudio()
                             }}>mic_off</i>)
+                    }
+                    &nbsp;&nbsp;&nbsp;
+                    {
+                        inRoom === true ? (
+                            <div className="copy-to-clipboard">
+                                <i className="material-icons" style={{ display: hasCopied ? 'none' : '', cursor: 'pointer', color: 'white' }} onClick={() => {
+                                    CopyToClipboard()
+                                }}>content_copy</i>
+                                <i className="material-icons" style={{ display: hasCopied ? '' : 'none', cursor: 'pointer', color: 'white' }} onClick={() => {
+                                    CopyToClipboard()
+                                }}>assignment_turned_in</i>
+                            </div>
+
+                        ) :
+                            (
+                                <div>
+
+                                </div>
+                            )
                     }
 
                 </div>

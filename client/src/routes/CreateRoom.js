@@ -34,11 +34,11 @@ const CreateRoom = (props) => {
                     src={img}
                     alt="new"
                 />
-                <img
+                {/* <img
                     className="logo"
                     src={logo}
                     alt="new"
-                />
+                /> */}
             </div>
             <div className="Button-div">
                 <button className="angled-gradient-button" onClick={create} style={{ height: '4rem', width: '60%' }}>Create room</button>
