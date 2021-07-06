@@ -253,3 +253,58 @@
 .angled-gradient-button:active {
     transform: translateY(-1px);
 }
+
+.board {
+    width: 100%;
+    height: 100%;
+}
+
+.sketch {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+    /* background: linear-gradient(45deg, #03A9F4, #4CAF50); */
+}
+
+.color-picker-container {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.brushsize-container {
+    display: inline;
+    color: white;
+    margin-left: 12px;
+}
+
+.tools-section {
+    text-align: center;
+}
+
+.outer-board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+.board-container {
+    width: 80%;
+    height: 80%;
+    background: white;
+    border-radius: 25px;
+}

@@ -7,7 +7,9 @@ import styled from "styled-components";
 import '../styles/design.css';
 import M from 'materialize-css'
 import socket from "socket.io-client/build/socket";
-import logo from '../images/Logo.png'
+import logo from '../images/Logo.png';
+import Container from '../component/Container';
+import wblogo from '../images/blackboard.png'
 const Button = styled.button`
     display: flex;
     flex-wrap: wrap;
@@ -16,11 +18,6 @@ const Button = styled.button`
     width: 50%;
     height: 4rem;
 `
-
-const Container = styled.div`
-  height: 100vh;
-  width: 20%;
-`;
 
 const StyledVideo = styled.video`
     border-radius: 10px;
@@ -50,6 +47,7 @@ const Room = (props) => {
     const [inRoom, setInRoom] = useState(false);
     const [chat, setChat] = useState([]);
     const [name, setName] = useState("");
+    const [showWB, setShowWB] = useState(false);
     const [msgRcv, setMsgRcv] = useState("");
     const socketRef = useRef();
     const userVideo = useRef();
@@ -57,6 +55,7 @@ const Room = (props) => {
     const roomID = props.match.params.roomID;
     const [hasCopied, setHasCopied] = useState(false);
     let isName = false;
+    // let showWB = false;
     const videoConstraints = {
         minAspectRatio: 1.333,
         minFrameRate: 60,
@@ -95,6 +94,7 @@ const Room = (props) => {
                 });
                 socketRef.current.on("user joined", (payload) => {
                     console.log("user joined", payload);
+                    console.log(name);
                     M.toast({ html: `${payload.callerID} joined`, classes: 'rounded toast-class' });
                     const peer = addPeer(payload.signal, payload.callerID, stream);
                     peersRef.current.push({
@@ -252,8 +252,8 @@ const Room = (props) => {
     }
     function DisplayUserName() {
         M.toast({ html: `Hello ${name}`, classes: 'rounded toast-class' });
+        console.log(name);
         isName = true;
-
     }
     function CopyToClipboard() {
         let text = window.location.href;
@@ -268,12 +268,20 @@ const Room = (props) => {
             setHasCopied(false)
         }
     }
+    function WhiteBoard() {
+        if (showWB) {
+            setShowWB(false);
+        } else {
+            setShowWB(true);
+        }
+    }
     return (
         <div className="Room-div">
             {
                 inRoom === true ?
                     (
                         <div className="InRoom-div">
+                            
                             <div id="item1" className="Video-div">
                                 <StyledVideo muted ref={userVideo} autoPlay playsInline />
                             </div>
@@ -290,15 +298,17 @@ const Room = (props) => {
                                         });
                                     }
                                     console.log(index);
-                                    let temp = "item" + toString(index + 2);
                                     return (
                                         // <div key={peer.peerID} >
-                                        <div id={temp} className="Video-div">
+                                        <div className="Video-div">
                                             <Video peer={peer.peer} />
                                         </div>
                                         // </div>
                                     );
                                 })
+                            }
+                            {
+                                showWB === true ? (<Container />) : (<div></div>)
                             }
                         </div>
                     ) : (
@@ -377,7 +387,21 @@ const Room = (props) => {
                                 </div>
                             )
                     }
+                    &nbsp;&nbsp;&nbsp;
+                    {
+                        inRoom === true ? (
+                            <div>
+                                <img src={wblogo} width="30px" height="40px" style={{ cursor: 'pointer' }} onClick={() => { WhiteBoard() }}></img>
+                                
+                            </div>
 
+                        ) :
+                            (
+                                <div>
+
+                                </div>
+                            )
+                    }
                 </div>
             </div>
         </div>

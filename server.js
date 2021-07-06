@@ -6,13 +6,13 @@ const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket(server);
 const path = require("path");
-const mongoose = require('mongoose');
-const { mongourl } = require('./config/keys')
+// const mongoose = require('mongoose');
+// const { mongourl } = require('./config/keys')
 const rooms = {};
-const User = require('./models/User');
-const users = [];
+// const User = require('./models/User');
+const socketNames = {}
 // mongoose.connect(mongourl);
-mongoose.connect(mongourl, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(mongourl, { useNewUrlParser: true, useUnifiedTopology: true });
 const socketToRoom = {};
 
 io.on('connection', socket => {
@@ -24,6 +24,10 @@ io.on('connection', socket => {
                 return;
             }
             rooms[roomID].push(socket.id);
+            // socketNames[socket.id] = 
+            // rooms[roomID].forEach((id)=>{
+
+            // })
         } else {
             rooms[roomID] = [socket.id];
         }
@@ -47,65 +51,22 @@ io.on('connection', socket => {
         console.log("updateMyMedia");
         socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
     });
-
-    // socket.on("add user in database", (payload) => {
-    //     console.log(payload);
-    // try {
-    // if (users.length > 0) {
-    //     const pastUser = users.find(user.id === socket.id);
-    //     if (pastUser) {
-    //         console.log("User already exists ");
-    //     } else {
-    //         const newUser = new User({
-    //             name: userName,
-    //             id: socket.id
-    //         });
-    //         newUser.save().then((savedUser) => {
-    //             console.log(`${userName} has been added to the database`);
-    //             users.push(newUser);
-    //         })
-    //     }
-    // }
-    // else {
-
-    //     const newUser = new User({
-    //         name: userName,
-    //         id: socket.id
-    //     });
-    //     newUser.save().then((savedUser) => {
-    //         console.log(`${userName} has been added to the database`);
-    //         users.push(newUser);
-    //     })
-
-    // }
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // })
-
-    // socket.on("delete user from database", (userId) => {
-    //     console.log(userId);
-    //     // const existingUser = users.find(user => user.id === userId);
-    //     // if (!existingUser) {
-    //     //     console.log("User doesn't exist in the database ");
-    //     // } else {
-    //     //     users.splice(users.findIndex(user => user.id === userId), 1);
-    //     //     console.log(`${existingUser.name} has been removed from the database`);
-    //     // }
-    // })
+    socket.on('canvas-data', (data) => {
+        socket.broadcast.emit('canvas-data', data);
+    })
+    
     socket.on('disconnect', () => {
         console.log("disconnecting user");
         const roomID = socketToRoom[socket.id];
         let room = rooms[roomID];
         if (room) {
-            const newroom = room.filter(id => id !== socket.id);
-            delete room;
-
-            rooms[roomID] = newroom;
+            const index = room.indexOf(socket.id);
+            rooms[roomID].splice(index, 1);
         }
         else {
             delete rooms[roomID];
         }
+        socket.disconnect();
         socket.broadcast.emit("user left", socket.id);
     });
 
