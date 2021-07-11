@@ -2,7 +2,7 @@
   "name": "group-video-final",
   "version": "1.0.0",
   "main": "server.js",
-  "license": "MIT",
+  "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

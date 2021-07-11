@@ -1,3 +1,4 @@
+require("dotenv").config
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -9,22 +10,14 @@ let socketList = {};
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+if (process.env.PROD) {
+    app.use(express.static(path.join(__dirname, './client/build')));
 
     app.get('/*', function (req, res) {
-        res.sendFile(path.join(__dirname, '../client/build/index.html'));
+        res.sendFile(path.join(__dirname, './client/build/index.html'));
     });
 }
 
-// Route
-app.get('/ping', (req, res) => {
-    res
-        .send({
-            success: true,
-        })
-        .status(200);
-});
 
 // Socket
 io.on('connection', (socket) => {
