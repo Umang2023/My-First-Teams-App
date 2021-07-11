@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
+//In room controls
 const BottomBar = ({
   clickChat,
   goToBack,

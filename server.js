@@ -9,7 +9,7 @@ const path = require('path');
 let socketList = {};
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+//for hosting on heroku
 if (process.env.PROD) {
     app.use(express.static(path.join(__dirname, './client/build')));
 
@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
             }
         });
     });
-
+//add user to the room 
     socket.on('add user', ({ userToCall, from, signal }) => {
         io.to(userToCall).emit('user joined', {
             signal,
@@ -71,18 +71,18 @@ io.on('connection', (socket) => {
             info: socketList[socket.id],
         });
     });
-
+//server receives signal from user and send to the room
     socket.on('sending signal', ({ signal, to }) => {
         io.to(to).emit('accepting signal', {
             signal,
             answerId: socket.id,
         });
     });
-
+//chat messages are passed
     socket.on('send chat message', ({ roomId, msg, sender }) => {
         io.sockets.in(roomId).emit('receive chat message', { msg, sender });
     });
-
+//user leave event
     socket.on('remove user', ({ roomId, user }) => {
         let userInfo = socketList[socket.id];
         delete socketList[socket.id];
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
             .emit('user left', { userId: socket.id, info: userInfo });
         io.sockets.sockets[socket.id].leave(roomId);
     });
-
+//toggling user video and audio
     socket.on('change video audio', ({ roomId, switchTarget }) => {
         if (switchTarget === 'video') {
             socketList[socket.id].video = !socketList[socket.id].video;

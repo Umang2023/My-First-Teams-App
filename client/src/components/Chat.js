@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import socket from '../socket';
-
+// In room chat
 const Chat = ({ display, roomId }) => {
   const currentUser = sessionStorage.getItem('user');
   const [msg, setMsg] = useState([]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef();
-
+//for receiving other user's messages
   useEffect(() => {
     socket.on('receive chat message', ({ msg, sender }) => {
       setMsg((msgs) => [...msgs, { sender, msg }]);
@@ -20,7 +20,7 @@ const Chat = ({ display, roomId }) => {
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }
-
+//sending message
   const sendMessage = (e) => {
     if (e.key === 'Enter') {
       const msg = e.target.value;

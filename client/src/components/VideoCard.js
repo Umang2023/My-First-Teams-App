@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+//for video components
 const VideoCard = (props) => {
   const ref = useRef();
   const peer = props.peer;

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import '../styles/design.css'
+//Outside Room controls
 const OutsideBottomBar = ({
     goToBack,
     toggleCameraAudio,
