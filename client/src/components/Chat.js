@@ -7,18 +7,18 @@ const Chat = ({ display, roomId }) => {
   const [msg, setMsg] = useState([]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef();
-  
+
   useEffect(() => {
-    socket.on('FE-receive-message', ({ msg, sender }) => {
+    socket.on('receive chat message', ({ msg, sender }) => {
       setMsg((msgs) => [...msgs, { sender, msg }]);
     });
   }, []);
 
   // Scroll to Bottom of Message List
-  useEffect(() => {scrollToBottom()}, [msg])
+  useEffect(() => { scrollToBottom() }, [msg])
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth'});
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }
 
   const sendMessage = (e) => {
@@ -26,7 +26,7 @@ const Chat = ({ display, roomId }) => {
       const msg = e.target.value;
 
       if (msg) {
-        socket.emit('BE-send-message', { roomId, msg, sender: currentUser });
+        socket.emit('send chat message', { roomId, msg, sender: currentUser });
         inputRef.current.value = '';
       }
     }
@@ -55,13 +55,13 @@ const Chat = ({ display, roomId }) => {
                 );
               }
             })}
-            <div style={{float:'left', clear: 'both'}} ref={messagesEndRef} />
+          <div style={{ float: 'left', clear: 'both' }} ref={messagesEndRef} />
         </MessageList>
       </ChatArea>
       <BottomInput
         ref={inputRef}
         onKeyUp={sendMessage}
-        placeholder="Enter your message"
+        placeholder="Your message (Press enter to send)"
       />
     </ChatContainer>
   );
@@ -79,10 +79,17 @@ const ChatContainer = styled.div`
 
 const TopHeader = styled.div`
   width: 100%;
-  margin-top: 15px;
   font-weight: 600;
   font-size: 20px;
-  color: black;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-image: linear-gradient(90deg, #23073d, #7f23d5, #8523d5);
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 10%;
 `;
 
 const ChatArea = styled.div`
@@ -98,7 +105,7 @@ const MessageList = styled.div`
   width: 100%;
   flex-direction: column;
   padding: 15px;
-  color: #454552;
+  color: #3363ff;
 `;
 
 const Message = styled.div`
@@ -120,7 +127,7 @@ const Message = styled.div`
     width: auto;
     padding: 9px;
     margin-top: 3px;
-    border: 1px solid rgb(78, 161, 211, 0.3);
+    border: 1px solid #3363ff;;
     border-radius: 15px;
     box-shadow: 0px 0px 3px #4ea1d3;
     font-size: 14px;
@@ -148,7 +155,7 @@ const UserMessage = styled.div`
     margin-right: 30px;
     border: 1px solid rgb(78, 161, 211, 0.3);
     border-radius: 15px;
-    background-color: #4ea1d3;
+    background-color: #3363ff;
     color: white;
     font-size: 14px;
     text-align: left;
@@ -156,16 +163,23 @@ const UserMessage = styled.div`
 `;
 
 const BottomInput = styled.input`
-  bottom: 0;
+  margin-bottom: 0 !important;
   width: 100%;
-  height: 8%;
-  padding: 15px;
-  border-top: 1px solid rgb(69, 69, 82, 0.25);
+  height: 10% !important;
+  padding-left: 10px !important;
+  border-top: 2px solid black !important;
   box-sizing: border-box;
-  opacity: 0.7;
-  margin-left: 10px !important;
+  font-size: 1.2rem;
+  color: #fff;
+  background-image: linear-gradient(90deg, #23073d, #7f23d5, #8523d5);
+  background-repeat: no-repeat;
+  background-position: center;
+  border-bottom: none !important;
+  font-family: 'Philosopher', sans-serif !important;
   :focus {
     outline: none;
+    
+    font-weight: 600;
   }
 `;
 

@@ -79,7 +79,7 @@ const BottomBar = ({
               className='fa fa-clipboard'
             ></FaIcon>
           </div>
-          Copy Link
+          Copy Room Name
         </ClipBoard>
       </Center>
       <Right>
@@ -151,7 +151,7 @@ const ScreenButton = styled.div`
   }
 `;
 const ClipBoard = styled.div`
-  width: 100px;
+  width: 110px;
   border: none;
   font-size: 0.9375rem;
   padding: 5px;

@@ -9,7 +9,7 @@ const Main = (props) => {
   const [errMsg, setErrMsg] = useState('');
 //if user exists don't add him 
   useEffect(() => {
-    socket.on('FE-error-user-exist', ({ error }) => {
+    socket.on('error user exists', ({ error }) => {
       if (!error) {
         const roomName = roomRef.current.value;
         const userName = userRef.current.value;
@@ -31,7 +31,7 @@ const Main = (props) => {
       setErr(true);
       setErrMsg('Enter Room Name or User Name');
     } else {
-      socket.emit('BE-check-user', { roomId: roomName, userName });
+      socket.emit('check user exists', { roomId: roomName, userName });
     }
   }
 

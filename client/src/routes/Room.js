@@ -1,6 +1,7 @@
 import '../styles/design.css'
 import M from 'materialize-css'
 import React, { useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import Peer from 'simple-peer';
 import styled from 'styled-components';
 import socket from '../socket';
@@ -13,6 +14,7 @@ import '../styles/design.css'
 //Actual Video conference room
 const Room = (props) => {
   //Getting username and defining react hooks
+  const history = useHistory();
   const currentUser = sessionStorage.getItem('user');
   const [peers, setPeers] = useState([]);
   const [userVideoAudio, setUserVideoAudio] = useState({
@@ -30,11 +32,16 @@ const Room = (props) => {
   const [inRoom, setInRoom] = useState(false);
   useEffect(() => {
     // Get Video Devices
+    if (!currentUser) {
+      const to = '/';
+      M.toast({ html: `You must First set your name before joining a room`, classes: 'rounded toast-class' });
+      setTimeout(() => history.push(to), 300);
+      return;
+    }
     navigator.mediaDevices.enumerateDevices().then((devices) => {
       const filtered = devices.filter((device) => device.kind === 'videoinput');
       setVideoDevices(filtered);
     });
-
     // Set Back Button Event
     window.addEventListener('popstate', goToBack);
 
@@ -45,8 +52,8 @@ const Room = (props) => {
         userVideoRef.current.srcObject = stream;
         userStream.current = stream;
 
-        socket.emit('BE-join-room', { roomId, userName: currentUser });
-        socket.on('FE-user-join', (users) => {
+        socket.emit('join room', { roomId, userName: currentUser });
+        socket.on('all users', (users) => {
           // all existing users
           const peers = [];
           users.forEach(({ userId, info }) => {
@@ -77,7 +84,7 @@ const Room = (props) => {
           setPeers(peers);
         });
         //Adding new user in the room
-        socket.on('FE-receive-call', ({ signal, from, info }) => {
+        socket.on('user joined', ({ signal, from, info }) => {
           let { userName, video, audio } = info;
           const peerIdx = findPeer(from);
 
@@ -103,24 +110,28 @@ const Room = (props) => {
           }
         });
         //Peer handshake
-        socket.on('FE-call-accepted', ({ signal, answerId }) => {
+        socket.on('accepting signal', ({ signal, answerId }) => {
           const peerIdx = findPeer(answerId);
           peerIdx.peer.signal(signal);
         });
         //Disconnect event
-        socket.on('FE-user-leave', ({ userId, userName }) => {
+        socket.on('user left', ({ userId, userName }) => {
           const peerIdx = findPeer(userId);
-          peerIdx.peer.destroy();
+          if (peerIdx) {
+            peerIdx.peer.destroy();
+          }
           setPeers((users) => {
             users = users.filter((user) => user.peerID !== peerIdx.peer.peerID);
             return [...users];
           });
         });
       });
-      //Cam on and off
-    socket.on('FE-toggle-camera', ({ userId, switchTarget }) => {
+    //Cam on and off
+    socket.on('change vid aud', ({ userId, switchTarget }) => {
       const peerIdx = findPeer(userId);
-
+      if (!peerIdx) {
+        return;
+      }
       setUserVideoAudio((preList) => {
         let video = preList[peerIdx.userName].video;
         let audio = preList[peerIdx.userName].audio;
@@ -140,7 +151,7 @@ const Room = (props) => {
     };
 
   }, []);
-//Creating new peer connection
+  //Creating new peer connection
   function createPeer(userId, caller, stream) {
     const peer = new Peer({
       initiator: true,
@@ -149,7 +160,7 @@ const Room = (props) => {
     });
 
     peer.on('signal', (signal) => {
-      socket.emit('BE-call-user', {
+      socket.emit('add user', {
         userToCall: userId,
         from: caller,
         signal,
@@ -161,7 +172,7 @@ const Room = (props) => {
 
     return peer;
   }
-//adding incoming peer connection 
+  //adding incoming peer connection 
   function addPeer(incomingSignal, callerId, stream) {
     const peer = new Peer({
       initiator: false,
@@ -170,7 +181,7 @@ const Room = (props) => {
     });
 
     peer.on('signal', (signal) => {
-      socket.emit('BE-accept-call', { signal, to: callerId });
+      socket.emit('sending signal', { signal, to: callerId });
     });
 
     peer.on('disconnect', () => {
@@ -181,11 +192,11 @@ const Room = (props) => {
 
     return peer;
   }
-//a utility function for finding peers
+  //a utility function for finding peers
   function findPeer(id) {
     return peersRef.current.find((p) => p.peerID === id);
   }
-//Creating video component of user's video
+  //Creating video component of user's video
   function createUserVideo(peer, index, arr) {
     return (
       <VideoBox
@@ -199,7 +210,7 @@ const Room = (props) => {
       </VideoBox>
     );
   }
-//When video turns off write user name
+  //When video turns off write user name
   function writeUserName(userName, index) {
     if (userVideoAudio.hasOwnProperty(userName)) {
       if (!userVideoAudio[userName].video) {
@@ -217,15 +228,16 @@ const Room = (props) => {
   // BackButton
   const goToBack = (e) => {
     e.preventDefault();
-    socket.emit('BE-leave-room', { roomId, leaver: currentUser });
+    socket.emit('remove user', { roomId, user: currentUser });
     sessionStorage.removeItem('user');
     window.location.href = '/';
   };
-//Microphone on and off
+  //Microphone on and off
   const toggleCameraAudio = (e) => {
     const target = e.target.getAttribute('data-switch');
 
     setUserVideoAudio((preList) => {
+      //getting audio and video status of local user
       let videoSwitch = preList['localUser'].video;
       let audioSwitch = preList['localUser'].audio;
 
@@ -243,17 +255,18 @@ const Room = (props) => {
           userStream.current.getAudioTracks()[0].enabled = audioSwitch;
         }
       }
-
+      //updating the peers list
       return {
         ...preList,
         localUser: { video: videoSwitch, audio: audioSwitch },
       };
     });
-
-    socket.emit('BE-toggle-camera-audio', { roomId, switchTarget: target });
+    //informing server which user's audio and video are changed
+    socket.emit('change video audio', { roomId, switchTarget: target });
   };
-//screen sharing 
+  //screen sharing 
   const clickScreenSharing = () => {
+    //getting screen stream using webrtc mediastream
     if (!screenShare) {
       navigator.mediaDevices
         .getDisplayMedia({ cursor: true })
@@ -261,7 +274,7 @@ const Room = (props) => {
           const screenTrack = stream.getTracks()[0];
 
           peersRef.current.forEach(({ peer }) => {
-            // replaceTrack (oldTrack, newTrack, oldStream);
+            // replacing tracks of video to those of stream
             peer.replaceTrack(
               peer.streams[0]
                 .getTracks()
@@ -271,7 +284,7 @@ const Room = (props) => {
             );
           });
 
-          // Listen click end
+          // updating tracks again
           screenTrack.onended = () => {
             peersRef.current.forEach(({ peer }) => {
               peer.replaceTrack(
@@ -295,25 +308,32 @@ const Room = (props) => {
     }
   };
 
+  function reverse(s) {
+    return [...s].reverse().join("");
+  }
   //copy to clipboard
   function CopyToClipboard() {
     let text = window.location.href;
+    let Room = "";
+    for (let i = text.length - 1; i >= 0; --i) {
+      if (text.charAt(i) == '/')
+        break;
+      Room += text.charAt(i);
+    }
+    Room = reverse(Room);
     try {
-      navigator.clipboard.writeText(text).then(() => {
+      navigator.clipboard.writeText(Room).then(() => {
         M.toast({ html: `Copied to clipboard`, classes: 'rounded toast-class' })
-        // setHasCopied(true)
       })
     } catch (err) {
       M.toast({ html: `Couldn't Copy to clipboard`, classes: 'rounded toast-class' })
       console.log(err);
-      // setHasCopied(false)
     }
   }
 
   //full screen
   const expandScreen = (e) => {
     const elem = e.target;
-
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     } else if (elem.mozRequestFullScreen) {
@@ -327,7 +347,7 @@ const Room = (props) => {
       elem.msRequestFullscreen();
     }
   };
-//a utility function for switching between video and screen
+  //a utility function for switching between video devices
   const clickBackground = () => {
     if (!showVideoDevices) return;
     setShowVideoDevices(false);

@@ -19,16 +19,16 @@ if (process.env.PROD) {
 }
 
 
-// Socket
+// Socket connection
 io.on('connection', (socket) => {
     console.log(`New User connected: ${socket.id}`);
-
+    //On user disconnect
     socket.on('disconnect', () => {
         socket.disconnect();
         console.log('User disconnected!');
     });
-
-    socket.on('BE-check-user', ({ roomId, userName }) => {
+    //check user exists before joining
+    socket.on('check user exists', ({ roomId, userName }) => {
         let error = false;
 
         io.sockets.in(roomId).clients((err, clients) => {
@@ -37,14 +37,14 @@ io.on('connection', (socket) => {
                     error = true;
                 }
             });
-            socket.emit('FE-error-user-exist', { error });
+            socket.emit('error user exists', { error });
         });
     });
 
     /**
      * Join Room
      */
-    socket.on('BE-join-room', ({ roomId, userName }) => {
+    socket.on('join room', ({ roomId, userName }) => {
         // Socket Join RoomName
         socket.join(roomId);
         socketList[socket.id] = { userName, video: true, audio: true };
@@ -57,42 +57,41 @@ io.on('connection', (socket) => {
                     // Add User List
                     users.push({ userId: client, info: socketList[client] });
                 });
-                socket.broadcast.to(roomId).emit('FE-user-join', users);
-                // io.sockets.in(roomId).emit('FE-user-join', users);
+                socket.broadcast.to(roomId).emit('all users', users);
             } catch (e) {
-                io.sockets.in(roomId).emit('FE-error-user-exist', { err: true });
+                io.sockets.in(roomId).emit('error user exists', { err: true });
             }
         });
     });
 
-    socket.on('BE-call-user', ({ userToCall, from, signal }) => {
-        io.to(userToCall).emit('FE-receive-call', {
+    socket.on('add user', ({ userToCall, from, signal }) => {
+        io.to(userToCall).emit('user joined', {
             signal,
             from,
             info: socketList[socket.id],
         });
     });
 
-    socket.on('BE-accept-call', ({ signal, to }) => {
-        io.to(to).emit('FE-call-accepted', {
+    socket.on('sending signal', ({ signal, to }) => {
+        io.to(to).emit('accepting signal', {
             signal,
             answerId: socket.id,
         });
     });
 
-    socket.on('BE-send-message', ({ roomId, msg, sender }) => {
-        io.sockets.in(roomId).emit('FE-receive-message', { msg, sender });
+    socket.on('send chat message', ({ roomId, msg, sender }) => {
+        io.sockets.in(roomId).emit('receive chat message', { msg, sender });
     });
 
-    socket.on('BE-leave-room', ({ roomId, leaver }) => {
+    socket.on('remove user', ({ roomId, user }) => {
         delete socketList[socket.id];
         socket.broadcast
             .to(roomId)
-            .emit('FE-user-leave', { userId: socket.id, userName: [socket.id] });
+            .emit('user left', { userId: socket.id, userName: [socket.id] });
         io.sockets.sockets[socket.id].leave(roomId);
     });
 
-    socket.on('BE-toggle-camera-audio', ({ roomId, switchTarget }) => {
+    socket.on('change video audio', ({ roomId, switchTarget }) => {
         if (switchTarget === 'video') {
             socketList[socket.id].video = !socketList[socket.id].video;
         } else {
@@ -100,7 +99,7 @@ io.on('connection', (socket) => {
         }
         socket.broadcast
             .to(roomId)
-            .emit('FE-toggle-camera', { userId: socket.id, switchTarget });
+            .emit('change vid aud', { userId: socket.id, switchTarget });
     });
 });
 
