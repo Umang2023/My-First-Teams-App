@@ -58,13 +58,10 @@ const Room = (props) => {
           const peers = [];
           users.forEach(({ userId, info }) => {
             let { userName, video, audio } = info;
-
             if (userName !== currentUser) {
               const peer = createPeer(userId, socket.id, stream);
-
               peer.userName = userName;
               peer.peerID = userId;
-
               peersRef.current.push({
                 peerID: userId,
                 peer,
@@ -80,12 +77,12 @@ const Room = (props) => {
               });
             }
           });
-
           setPeers(peers);
         });
         //Adding new user in the room
         socket.on('user joined', ({ signal, from, info }) => {
           let { userName, video, audio } = info;
+          M.toast({ html: `${userName} joined`, classes: 'rounded toast-class' })
           const peerIdx = findPeer(from);
 
           if (!peerIdx) {
@@ -115,7 +112,11 @@ const Room = (props) => {
           peerIdx.peer.signal(signal);
         });
         //Disconnect event
-        socket.on('user left', ({ userId, userName }) => {
+        socket.on('user left', ({ userId, info }) => {
+          if (info) {
+            let { userName, video, audio } = info;
+            M.toast({ html: `${userName} left`, classes: 'rounded toast-class' })
+          }
           const peerIdx = findPeer(userId);
           if (peerIdx) {
             peerIdx.peer.destroy();

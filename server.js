@@ -84,10 +84,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('remove user', ({ roomId, user }) => {
+        let userInfo = socketList[socket.id];
         delete socketList[socket.id];
         socket.broadcast
             .to(roomId)
-            .emit('user left', { userId: socket.id, userName: [socket.id] });
+            .emit('user left', { userId: socket.id, info: userInfo });
         io.sockets.sockets[socket.id].leave(roomId);
     });
 
