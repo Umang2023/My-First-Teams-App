@@ -2,6 +2,7 @@
   "name": "group-video-final",
   "version": "1.0.0",
   "main": "server.js",
+  "description": "A video conferencing platform",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
