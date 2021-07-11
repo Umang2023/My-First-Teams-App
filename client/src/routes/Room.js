@@ -301,12 +301,12 @@ const Room = (props) => {
     try {
       navigator.clipboard.writeText(text).then(() => {
         M.toast({ html: `Copied to clipboard`, classes: 'rounded toast-class' })
-        setHasCopied(true)
+        // setHasCopied(true)
       })
     } catch (err) {
       M.toast({ html: `Couldn't Copy to clipboard`, classes: 'rounded toast-class' })
       console.log(err);
-      setHasCopied(false)
+      // setHasCopied(false)
     }
   }
 
