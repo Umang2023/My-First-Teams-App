@@ -1,4 +1,3 @@
-
 import '../styles/design.css'
 import M from 'materialize-css'
 import React, { useState, useEffect, useRef } from 'react';
@@ -10,7 +9,10 @@ import BottomBar from '../components/BottomBar';
 import OutsideBottomBar from '../components/OutsideBottomBar';
 import Chat from '../components/Chat';
 import '../styles/design.css'
+
+//Actual Video conference room
 const Room = (props) => {
+  //Getting username and defining react hooks
   const currentUser = sessionStorage.getItem('user');
   const [peers, setPeers] = useState([]);
   const [userVideoAudio, setUserVideoAudio] = useState({
@@ -26,8 +28,6 @@ const Room = (props) => {
   const userStream = useRef();
   const roomId = props.match.params.roomId;
   const [inRoom, setInRoom] = useState(false);
-  const [hasCopied, setHasCopied] = useState(false);
-  // const sockets = io('/');
   useEffect(() => {
     // Get Video Devices
     navigator.mediaDevices.enumerateDevices().then((devices) => {
@@ -47,7 +47,7 @@ const Room = (props) => {
 
         socket.emit('BE-join-room', { roomId, userName: currentUser });
         socket.on('FE-user-join', (users) => {
-          // all users
+          // all existing users
           const peers = [];
           users.forEach(({ userId, info }) => {
             let { userName, video, audio } = info;
@@ -76,7 +76,7 @@ const Room = (props) => {
 
           setPeers(peers);
         });
-
+        //Adding new user in the room
         socket.on('FE-receive-call', ({ signal, from, info }) => {
           let { userName, video, audio } = info;
           const peerIdx = findPeer(from);
@@ -102,12 +102,12 @@ const Room = (props) => {
             });
           }
         });
-
+        //Peer handshake
         socket.on('FE-call-accepted', ({ signal, answerId }) => {
           const peerIdx = findPeer(answerId);
           peerIdx.peer.signal(signal);
         });
-
+        //Disconnect event
         socket.on('FE-user-leave', ({ userId, userName }) => {
           const peerIdx = findPeer(userId);
           peerIdx.peer.destroy();
@@ -117,7 +117,7 @@ const Room = (props) => {
           });
         });
       });
-
+      //Cam on and off
     socket.on('FE-toggle-camera', ({ userId, switchTarget }) => {
       const peerIdx = findPeer(userId);
 
@@ -138,9 +138,9 @@ const Room = (props) => {
     return () => {
       socket.disconnect();
     };
-    // eslint-disable-next-line
-  }, []);
 
+  }, []);
+//Creating new peer connection
   function createPeer(userId, caller, stream) {
     const peer = new Peer({
       initiator: true,
@@ -161,7 +161,7 @@ const Room = (props) => {
 
     return peer;
   }
-
+//adding incoming peer connection 
   function addPeer(incomingSignal, callerId, stream) {
     const peer = new Peer({
       initiator: false,
@@ -181,11 +181,11 @@ const Room = (props) => {
 
     return peer;
   }
-
+//a utility function for finding peers
   function findPeer(id) {
     return peersRef.current.find((p) => p.peerID === id);
   }
-
+//Creating video component of user's video
   function createUserVideo(peer, index, arr) {
     return (
       <VideoBox
@@ -199,7 +199,7 @@ const Room = (props) => {
       </VideoBox>
     );
   }
-
+//When video turns off write user name
   function writeUserName(userName, index) {
     if (userVideoAudio.hasOwnProperty(userName)) {
       if (!userVideoAudio[userName].video) {
@@ -221,7 +221,7 @@ const Room = (props) => {
     sessionStorage.removeItem('user');
     window.location.href = '/';
   };
-
+//Microphone on and off
   const toggleCameraAudio = (e) => {
     const target = e.target.getAttribute('data-switch');
 
@@ -252,7 +252,7 @@ const Room = (props) => {
 
     socket.emit('BE-toggle-camera-audio', { roomId, switchTarget: target });
   };
-
+//screen sharing 
   const clickScreenSharing = () => {
     if (!screenShare) {
       navigator.mediaDevices
@@ -294,6 +294,8 @@ const Room = (props) => {
       screenTrackRef.current.onended();
     }
   };
+
+  //copy to clipboard
   function CopyToClipboard() {
     let text = window.location.href;
     try {
@@ -307,6 +309,8 @@ const Room = (props) => {
       setHasCopied(false)
     }
   }
+
+  //full screen
   const expandScreen = (e) => {
     const elem = e.target;
 
@@ -323,10 +327,9 @@ const Room = (props) => {
       elem.msRequestFullscreen();
     }
   };
-
+//a utility function for switching between video and screen
   const clickBackground = () => {
     if (!showVideoDevices) return;
-
     setShowVideoDevices(false);
   }
 

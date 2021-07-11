@@ -7,7 +7,7 @@ const Main = (props) => {
   const userRef = useRef();
   const [err, setErr] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-
+//if user exists don't add him 
   useEffect(() => {
     socket.on('FE-error-user-exist', ({ error }) => {
       if (!error) {
@@ -22,7 +22,7 @@ const Main = (props) => {
       }
     });
   }, [props.history]);
-
+//Joining room 
   function clickJoin() {
     const roomName = roomRef.current.value;
     const userName = userRef.current.value;
