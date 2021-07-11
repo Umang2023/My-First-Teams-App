@@ -75,6 +75,7 @@ const ChatContainer = styled.div`
   background-color: white;
   transition: all 0.5s ease;
   overflow: hidden;
+  border-radius: 10px;
 `;
 
 const TopHeader = styled.div`
@@ -86,9 +87,7 @@ const TopHeader = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-image: linear-gradient(90deg, #23073d, #7f23d5, #8523d5);
-  background-repeat: no-repeat;
-  background-position: center;
+  background-color: #3363ff;
   height: 10%;
 `;
 
@@ -171,9 +170,7 @@ const BottomInput = styled.input`
   box-sizing: border-box;
   font-size: 1.2rem;
   color: #fff;
-  background-image: linear-gradient(90deg, #23073d, #7f23d5, #8523d5);
-  background-repeat: no-repeat;
-  background-position: center;
+  background-color: #3363ff !important;
   border-bottom: none !important;
   font-family: 'Philosopher', sans-serif !important;
   :focus {
