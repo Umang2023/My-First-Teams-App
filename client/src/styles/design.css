@@ -1,64 +1,9 @@
-.Video-div {
+.home-div {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    width: 42%;
-    height: 40%;
-    padding: 0;
-    margin: auto;
-}
-
-.Outside-Video-div {
-    padding: 20px;
-    margin: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: 65%;
-    height: 80%;
-}
-
-.InRoom-div {
-    display: flex;
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    width: 100%;
-    height: 90%;
-}
-
-.NotInRoom-div {
-    display: flex;
-    flex-direction: row !important;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 95vh;
-    position: relative;
-}
-
-.Room-div {
-    display: flex;
-    flex-direction: row;
+    width: 100vw;
     height: 100vh;
-    width: 100%;
-    flex-wrap: wrap;
-    /* overflow: hidden; */
-}
-
-.Create-Room-div {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    /* justify-content: center; */
-    background-image: linear-gradient(-90deg, #23073d, #7f23d5, #8523d5);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    height: 100vh;
-    overflow-x: hidden;
-    overflow-y: hidden;
 }
 
 .img-div {
@@ -69,7 +14,7 @@
     width: 55%;
     height: 100%;
     float: left !important;
-    margin-left: 0;
+    margin-right: 50px;
     position: relative;
 }
 
@@ -80,127 +25,13 @@
     margin-left: 15%;
 }
 
-.logo {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    width: 100px;
-    height: 100px;
-    z-index: 2;
-}
-
-.Logo-div>img {
-    transform: translateY(-250%);
-    /* top: 3.8rem; */
-}
-
-.Button-div {
-    width: 35%;
+.outside-bottom-bar-cont {
     display: flex;
-    justify-content: center;
     align-items: center;
-    flex-direction: column;
-    flex-wrap: wrap;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-}
-
-.Button-div>button {
-    width: 50%;
-    margin-left: 20%;
-}
-
-.JoinRoom-div {
-    display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    width: 58%;
-    margin-left: 21%;
-    margin-top: 2%;
-    margin-bottom: 5%;
-}
-
-.JoinRoom-div>input {
-    border-bottom: 3px solid #3363ff !important;
-}
-
-.JoinRoom-div>input::placeholder {
-    color: #fff;
-    font-family: 'Philosopher', sans-serif;
-}
-
-.JoinRoom-div>input:focus {
-    color: #fff;
-    font-family: 'Philosopher', sans-serif;
-}
-
-.Joining-Options {
-    width: 45%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.Button-div2 {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex-wrap: wrap;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-}
-
-.SetName-div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    width: 50%;
-    margin-left: 1%;
-    margin-top: 2%;
-    margin-bottom: 5%;
-}
-
-.SetName-div>input {
-    border-bottom: 3px solid #3363ff !important;
-    width: 10%;
-    font-family: 'Philosopher', sans-serif;
-    color: #fff;
-    background-color: transparent;
-}
-
-.SetName-div>input::placeholder {
-    color: #fff;
-    background-color: transparent;
-    font-family: 'Philosopher', sans-serif;
-}
-
-.SetName-div>input:focus {
-    color: #fff;
-    background-color: transparent;
-    padding-left: 5px;
-    font-family: 'Philosopher', sans-serif;
-}
-
-.material-icons {
-    font-size: 3rem;
-}
-
-.Controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 30%;
-    height: 10vh;
-    background-color: #3363ff;
-    border-radius: 10px;
+    height: 10%;
+    border-radius: 25px;
 }
 
 .toast-class {
@@ -214,14 +45,9 @@
     align-items: center;
 }
 
-.Footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+.material-icons {
+    width: 30px;
+    font-size: 2rem;
 }
 
 .angled-gradient-button {
