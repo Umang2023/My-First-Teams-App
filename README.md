@@ -1,40 +1,44 @@
-My-First-Teams-App
+<h2>My-First-Teams-App</h2>
 
-A video-audio conferencing platform made using Reactjs, Nodejs, WebRTC, Socket.io and Simple Peer.
-Major Features Include:
-1. Multi-User Video Conferencing 
-2. Video/Audio toggle
-3. In Room Chat
-4. Screen Sharing
+<h4>A video-audio conferencing platform made using Reactjs, Nodejs, WebRTC, Socket.io and Simple Peer.</h4>
+
+<h4>Major Features Include: <br> 
+  <ol>
+    <li>Multi-User Video Conferencing </li>
+    <li>Video/Audio toggle </li>
+    <li>In Room Chat </li>
+    <li>Screen Sharing </li> 
+  <ol><br>
+</h4>
 
 To set up the project locally copy/download this repo to your local machine.
 Travel to the root directory of project location. Then open command line and install related modules using yarn 
 
-> yarn install
+> <b>yarn install</b>
 
 Then go to client folder via
 
-> cd client
+> <b>cd client</b>
 
 Install all the client side modules
 
-> yarn install
+> <b>yarn install</b>
 
 To start the server on localhost:8000, traverse back to the root directory
 
-> cd..
+> <b>cd..</b>
 
 Run this command
 
-> nodemon server.js or node server.js (if you don't have nodemon installed)
+> <b>nodemon server.js or node server.js (if you don't have nodemon installed)</b>
 
 To start the react scripts traverse to the client folder again
 
-> cd client
+> <b>cd client</b>
 
 And start the react scripts using
 
-> yarn react-scripts start
+> <b>yarn react-scripts start</b>
 
 
 The app should be running on localhost:3000.
