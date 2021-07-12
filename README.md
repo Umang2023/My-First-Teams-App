@@ -1,6 +1,6 @@
 My-First-Teams-App
 
-A video-audio conferencing platform made using WebRTC, Socket.io and Simple Peer.
+A video-audio conferencing platform made using Reactjs, Nodejs, WebRTC, Socket.io and Simple Peer.
 Major Features Include:
 1. Multi-User Video Conferencing 
 2. Video/Audio toggle
